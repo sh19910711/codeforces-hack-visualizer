@@ -1,0 +1,19 @@
+{
+  "name": "codeforces-hack-visualizer",
+  "version": "0.0.0",
+  "authors": [
+    "Hiroyuki Sano <sh19910711@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "~3.5.3",
+    "marionette": "~2.3.2"
+  }
+}
