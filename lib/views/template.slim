@@ -1,0 +1,25 @@
+script type="text/html" id="template-contest-list-view"
+
+  table.table.table-hover.table-striped.contest-list
+
+    thead
+      tr
+        th.col-sm-2 #
+        th.col-sm-5 Contest Name
+        th.col-sm-5 Links
+
+    tbody
+
+
+script type="text/html" id="template-contest-view"
+
+  td <%- id %>
+
+  td
+    == '<a href="/contests/-/<%= id %>">'
+    | <%- title %>
+    == '</a>'
+
+  td
+    == '[<a href="http://codeforces.com/contest/<%= id %>">Problems</a>]'
+
