@@ -13,7 +13,8 @@ gulp.task "bower", (done)->
     done()
   undefined
 
-gulp.task "main.js/watch", ->
+gulp.task "watch", ->
+  gulp.watch "src/sass/**/*.scss", ["style.css"]
   gulp.watch "src/coffee/**/*.coffee", ["main.js"]
 
 gulp.task "main.js", ["bower"], ->
@@ -29,3 +30,24 @@ gulp.task "style.css", ->
   gulp.src ["src/sass/**/*.scss"]
     .pipe sass()
     .pipe gulp.dest("lib/public/css/")
+
+gulp.task "template.html", ->
+  run = require("gulp-run")
+  streamify = require("gulp-streamify")
+  concat = require("gulp-concat")
+  gulp.src ["lib/views/template.slim"]
+    .pipe run("bundle exec slimrb -s", verbosity: 1)
+    .pipe streamify(concat "template.html")
+    .pipe gulp.dest("tmp/html/")
+
+gulp.task "test", ["bower", "template.html"], ->
+  karma = require("gulp-karma")
+  testScripts = [
+    "tmp/html/**/*.html"
+    "bower_components/jquery/dist/jquery.js"
+    "spec/coffee/spec_helper.coffee"
+    "spec/coffee/**/*_spec.coffee"
+  ]
+  gulp.src testScripts
+    .pipe karma
+      configFile: "config/karma.coffee"
