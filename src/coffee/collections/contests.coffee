@@ -9,6 +9,3 @@ define ["backbone"], (Backbone)->
     url: ->
       "/api/contests"
 
-    initialize: ->
-      console.debug "Contests: new instance" if DEBUG
-

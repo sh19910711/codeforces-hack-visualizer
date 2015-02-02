@@ -3,20 +3,35 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
   class MainController extends Marionette.Controller
 
     showIndex: ->
-      console.debug "MainController: show index" if DEBUG
-
-      Backbone.Wreqr.radio.vent.trigger "global", "title:change", ""
+      Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", ""
 
       Namespace = require("namespace")
       contests = new Namespace::Collections::Contests []
       contest_list_view = new Namespace::Views::ContestListView
       contest_list_view.collection = contests
-      Backbone.Wreqr.radio.vent.trigger "global", "region:update", contest_list_view.render()
+      Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", contest_list_view.render()
       contest_list_view.collection.fetch()
         .then null, (err)->
           throw "Error: fetch contests: #{err}"
 
     showContest: (contestId)->
-      Backbone.Wreqr.radio.vent.trigger "global", "title:change", "Contest ##{contestId}"
-      console.debug "MainController: show contest ##{contestId}" if DEBUG
+      Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "loading..."
+
+      Namespace = require("namespace")
+
+      contest = new Namespace::Models::Contest
+        id: contestId
+        title: "loading..."
+      contest_detail_view = new Namespace::Views::ContestDetailView
+        model: contest
+      Backbone.Wreqr.radio.vent.trigger "global", "app:headRegion:change", contest_detail_view
+
+      contest.fetch()
+        .then ->
+          Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "#{contest.get "title"}"
+
+      hacks = new Namespace::Collections::Hacks [], contestId: contestId
+      hacks.fetch()
+        .then ->
+          contest.set "topHackers", ["a", "b"]
 

@@ -1,4 +1,4 @@
-define ["marionette"], (Marionette)->
+define ["marionette", "backbone"], (Marionette, Backbone)->
 
   class App extends Marionette.Application
 
@@ -6,6 +6,7 @@ define ["marionette"], (Marionette)->
       Namespace = require("namespace")
 
       @addRegions
+        headRegion: "#header"
         mainRegion: "#stage"
 
       @initEvents()
@@ -17,24 +18,21 @@ define ["marionette"], (Marionette)->
         @startBackboneHistory()
 
     initEvents: ->
-      Backbone = require("backbone")
       channel = Backbone.Wreqr.radio.channel("global")
 
-      channel.vent.on "title:change", (sub_title)->
-        console.debug "Radio: on title:change" if DEBUG
+      channel.vent.on "app:title:change", (sub_title)->
         if sub_title == ""
           document.title = "Codeforces Hack Visualizer"
         else
           document.title = "#{sub_title} - Codeforces Hack Visualizer"
 
-      channel.vent.on "region:update", (view)=>
-        console.debug "Radio: on region:update" if DEBUG
+      channel.vent.on "app:headRegion:change", (view)=>
+        @headRegion.show view
+
+      channel.vent.on "app:mainRegion:change", (view)=>
         @mainRegion.show view
 
     startBackboneHistory: ->
-      console.debug "App: start backbone_history" if DEBUG
-
-      Backbone = require("backbone")
       Backbone.history.start
         root: "/"
         pushState: true

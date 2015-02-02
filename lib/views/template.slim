@@ -1,4 +1,28 @@
-script type="text/html" id="template-contest-list-view"
+// show visualizer
+script#template-visualizer-view type="text/html"
+
+  h1 This is visualizer
+
+
+// show contest detail
+script#template-contest-detail-view type="text/html"
+
+  h1 <%- title %>
+  p
+    strong
+      | TopHackers
+    | :
+    <% if(topHackers && topHackers.length) { %>
+      |  <%- topHackers.join(", ") %>
+    <% } else { %>
+      |  loading...
+    <% } %>
+
+  hr
+
+
+// show table of contest list
+script#template-contest-list-view type="text/html"
 
   table.table.table-hover.table-striped.contest-list
 
@@ -11,7 +35,8 @@ script type="text/html" id="template-contest-list-view"
     tbody
 
 
-script type="text/html" id="template-contest-view"
+// show item of contest list
+script#template-contest-list-item-view type="text/html"
 
   td <%- id %>
 
