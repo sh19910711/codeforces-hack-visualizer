@@ -51,16 +51,9 @@ class Server < ::Sinatra::Base
   end
 
   get "/api/contests/:contest_id/hacks" do |contest_id|
-    ::Codeforces.api.contest.hacks(contest_id.to_i).map do |hack|
-      {
-        :id => hack.id,
-        :hacker => hack.hacker.members.first.handle,
-        :defender => hack.defender.members.first.handle,
-        :time => hack.creationTimeSeconds,
-        :verdict => hack.verdict === "HACK_SUCCESSFUL",
-        :problem => hack.problem.index,
-      }
-    end.to_a.to_json
+    contest = ::Models::Contest.find(contest_id.to_i)
+    contest.fetch_hacks
+    contest.hacks.as_json.to_json
   end
 
   patch "/api/users" do
