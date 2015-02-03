@@ -6,6 +6,7 @@ class Models::Contest
   field :start, :type => Time
   field :duration, :type => Integer
   field :user_cached, :type => Boolean
+  field :hacks_cached, :type => Boolean
 
   def as_simple_json
     {
@@ -27,3 +28,4 @@ class Models::Contest
   end
 
 end
+

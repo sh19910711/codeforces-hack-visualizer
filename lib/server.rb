@@ -24,6 +24,10 @@ class Server < ::Sinatra::Base
   end
 
   get "/contests/-/:contest_id" do |contest_id|
+    unless ::Models::Contest.where(:_id => contest_id.to_i).exists?
+      status 404
+      halt
+    end
     slim :empty
   end
 
