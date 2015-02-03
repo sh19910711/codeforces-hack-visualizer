@@ -20,8 +20,8 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       Namespace = require("namespace")
 
       contest = new Namespace::Models::Contest
-        id: contestId
         title: "loading..."
+      contest.id = contestId
       contest_detail_view = new Namespace::Views::ContestDetailView
         model: contest
       Backbone.Wreqr.radio.vent.trigger "global", "app:headRegion:change", contest_detail_view

@@ -4,4 +4,5 @@ define ["backbone"], (Backbone)->
 
     initialize: ->
 
+    idAttribute: "_id"
 

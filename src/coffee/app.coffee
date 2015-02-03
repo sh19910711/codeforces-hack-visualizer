@@ -9,7 +9,8 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
         headRegion: "#header"
         mainRegion: "#stage"
 
-      @initEvents()
+      @initAppEvents()
+      @initWebApiEvents()
 
       new Namespace::Routers::MainRouter
         controller: new Namespace::Controllers::MainController
@@ -20,7 +21,17 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
       @on "start", ->
         @startBackboneHistory()
 
-    initEvents: ->
+    initWebApiEvents: ->
+      Namespace = require("namespace")
+      channel = Backbone.Wreqr.radio.channel("global")
+
+      channel.vent.on "webapi:contests:patch", ->
+        contests = new Namespace::Collections::Contests([])
+        contests.update()
+          .then ->
+            console.log "success update"
+
+    initAppEvents: ->
       channel = Backbone.Wreqr.radio.channel("global")
 
       channel.vent.on "app:title:change", (sub_title)->

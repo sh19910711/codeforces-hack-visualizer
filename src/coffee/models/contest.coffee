@@ -6,6 +6,8 @@ define ["backbone"], (Backbone)->
       title: ""
       topHackers: undefined
 
+    idAttribute: "_id"
+
     url: ->
       "/api/contests/#{@id}"
 

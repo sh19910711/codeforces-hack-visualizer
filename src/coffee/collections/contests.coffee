@@ -9,3 +9,8 @@ define ["backbone"], (Backbone)->
     url: ->
       "/api/contests"
 
+    update: ->
+      Backbone.sync "patch", @, patch: true
+        .then null, (err)->
+          console.error "Error: update contests #{err.toString()}" if err
+
