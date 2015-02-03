@@ -1,4 +1,5 @@
 require "sinatra/base"
+require "sinatra/reloader"
 require "slim"
 require "slim/include"
 require "json"
@@ -6,12 +7,22 @@ require "codeforces"
 
 class Server < ::Sinatra::Base
 
+  configure :development do
+    register ::Sinatra::Reloader
+  end
+
   get "/" do
     slim :empty
   end
 
   get "/contests/-/:contest_id" do |contest_id|
     slim :empty
+  end
+
+  get "/admin" do
+  end
+
+  get "/api/users" do
   end
 
   get "/api/contests" do
@@ -42,7 +53,10 @@ class Server < ::Sinatra::Base
     end.to_a.to_json
   end
 
-  def contests
+  patch "/api/users" do
+  end
+
+  patch "/api/contests" do
     $contests ||= ::Codeforces.contests.grep(:type => "CF", :phase => "FINISHED").map do |contest|
       {
         :id => contest.id,

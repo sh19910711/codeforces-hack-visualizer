@@ -2,8 +2,10 @@
 source "https://rubygems.org"
 
 gem "sinatra"
+gem "sinatra-contrib"
 gem "slim"
 gem "codeforces"
+gem "mongoid"
 
 group :development do
   gem "rake"
