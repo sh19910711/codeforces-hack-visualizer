@@ -3,6 +3,7 @@ define ["backbone"], (Backbone)->
   class Contest extends Backbone.Model
 
     defaults: ->
+      contestId: undefined
       title: ""
       topHackers: undefined
 
@@ -10,6 +11,4 @@ define ["backbone"], (Backbone)->
 
     url: ->
       "/api/contests/#{@id}"
-
-    initialize: ->
 

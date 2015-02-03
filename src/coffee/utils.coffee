@@ -6,6 +6,8 @@ define [], ->
         "user-gray"
       else if rating < 1500
         "user-green"
+      else if rating < 1700
+        "user-blue"
       else if rating < 1900
         "user-violet"
       else if rating < 2200

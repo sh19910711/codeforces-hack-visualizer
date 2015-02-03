@@ -20,6 +20,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       Namespace = require("namespace")
 
       contest = new Namespace::Models::Contest
+        contestId: contestId
         title: "loading..."
       contest.id = contestId
       contest_detail_view = new Namespace::Views::ContestDetailView
