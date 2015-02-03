@@ -2,7 +2,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
   class MainController extends Marionette.Controller
 
-    showIndex: ->
+    home: ->
       Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", ""
 
       Namespace = require("namespace")
@@ -14,7 +14,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
         .then null, (err)->
           throw "Error: fetch contests: #{err}"
 
-    showContest: (contestId)->
+    contest: (contestId)->
       Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "loading..."
 
       Namespace = require("namespace")

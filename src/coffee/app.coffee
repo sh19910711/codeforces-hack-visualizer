@@ -11,8 +11,11 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
 
       @initEvents()
 
-      main_router = new Namespace::Routers::MainRouter
+      new Namespace::Routers::MainRouter
         controller: new Namespace::Controllers::MainController
+
+      new Namespace::Routers::AdminRouter
+        controller: new Namespace::Controllers::AdminController
 
       @on "start", ->
         @startBackboneHistory()
