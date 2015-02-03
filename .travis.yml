@@ -1,0 +1,17 @@
+language: ruby
+
+rvm:
+  - "2.2"
+
+sudo: false
+
+install:
+  - bundle install -j4 --path vendor/bundle
+
+script:
+  - bundle exec rake spec
+
+cache:
+  directories:
+    - vendor/bundle
+
