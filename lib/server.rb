@@ -39,9 +39,6 @@ class Server < ::Sinatra::Base
     content_type :json
   end
 
-  get "/api/users" do
-  end
-
   get "/api/contests" do
     ::Models::Contest.all.order_by(:id.desc).map(&:as_simple_json).to_json
   end
@@ -54,6 +51,13 @@ class Server < ::Sinatra::Base
     contest = ::Models::Contest.find(contest_id.to_i)
     contest.fetch_hacks
     contest.hacks.map(&:as_json).to_json
+  end
+
+  get "/api/contests/:contest_id/users" do |contest_id|
+    contest = ::Models::Contest.find(contest_id.to_i)
+    contest.fetch_hacks
+    contest.fetch_users
+    contest.users.map(&:as_simple_json).to_json
   end
 
   patch "/api/users" do
