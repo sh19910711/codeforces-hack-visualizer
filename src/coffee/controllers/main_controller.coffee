@@ -26,11 +26,17 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
         model: contest
       Backbone.Wreqr.radio.vent.trigger "global", "app:headRegion:change", contest_detail_view
 
-      contest.fetch()
+      promises = []
+
+      promiseContest = contest.fetch()
         .then ->
           Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "#{contest.get "title"}"
 
       hacks = new Namespace::Collections::Hacks [], contestId: contestId
-      hacks.fetch().then ->
+      promiseHacks = hacks.fetch().then ->
         contest.set "topHackers", hacks.topHackers(5)
+
+      Promise.all [promiseContest, promiseHacks]
+        .then ->
+          Backbone.Wreqr.radio.vent.trigger "global", "users:load", contest.id
 

@@ -13,7 +13,7 @@ define ["marionette"], (Marionette)->
           @topHackers.chain()
             .map (hack)->
               encodedHandle = encodeURIComponent(hack.handle)
-              "<span data-user-handle=\"#{encodedHandle}\">#{encodedHandle}</span>"
+              "<span data-user-handle=\"#{encodedHandle}\">#{encodedHandle}</span> <span class=\"text-success\">(+#{hack.count})</span>"
             .value()
             .join ", "
         else

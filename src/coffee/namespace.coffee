@@ -5,10 +5,12 @@ define ->
     class @::Models
       Contest:  require("models/contest")
       Hack:     require("models/hack")
+      User:     require("models/user")
 
     class @::Collections
       Contests: require("collections/contests")
       Hacks:    require("collections/hacks")
+      Participants: require("collections/participants")
 
     class @::Routers
       MainRouter:   require("routers/main_router")
