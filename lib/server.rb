@@ -1,5 +1,4 @@
 require "sinatra/base"
-require "sinatra/reloader"
 require "slim"
 require "slim/include"
 require "json"
@@ -10,7 +9,14 @@ require_relative "models"
 class Server < ::Sinatra::Base
 
   configure :development do
+    require "sinatra/reloader"
     register ::Sinatra::Reloader
+  end
+
+  configure :development do
+    require "better_errors"
+    use ::BetterErrors::Middleware
+    ::BetterErrors.application_root = __dir__
   end
 
   get "/" do
@@ -25,22 +31,19 @@ class Server < ::Sinatra::Base
     slim :empty
   end
 
+  before "/api/*" do
+    content_type :json
+  end
+
   get "/api/users" do
   end
 
   get "/api/contests" do
-    content_type :json
-    contests.to_json
+    ::Models::Contest.all.order_by(:id.desc).map(&:as_simple_json).to_json
   end
 
   get "/api/contests/:contest_id" do |contest_id|
-    contest = ::Codeforces.contest(contest_id.to_i)
-    {
-      :id => contest.id,
-      :title => contest.name,
-      :start => contest.startTimeSeconds,
-      :duration => contest.durationSeconds,
-    }.to_json
+    ::Models::Contest.find(contest_id.to_i).as_json.to_json
   end
 
   get "/api/contests/:contest_id/hacks" do |contest_id|
@@ -60,12 +63,8 @@ class Server < ::Sinatra::Base
   end
 
   patch "/api/contests" do
-    $contests ||= ::Codeforces.contests.grep(:type => "CF", :phase => "FINISHED").map do |contest|
-      {
-        :id => contest.id,
-        :title => contest.name,
-      }
-    end.to_a
+    ::Models::Contest.fetch_all
+    {}.to_json
   end
 
 end

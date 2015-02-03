@@ -5,8 +5,8 @@ script#template-admin-view type="text/html"
 
   h2 Operations
 
-  button.btn.btn-primary Update Users
-  button.btn.btn-primary Update Contests
+  button.btn.btn-primary.update-users Update Users
+  button.btn.btn-primary.update-contests Update Contests
 
 // show visualizer
 script#template-visualizer-view type="text/html"
@@ -44,13 +44,13 @@ script#template-contest-list-view type="text/html"
 // show item of contest list
 script#template-contest-list-item-view type="text/html"
 
-  td <%- id %>
+  td <%- _id %>
 
   td
-    == '<a href="/contests/-/<%= id %>">'
+    == '<a href="/contests/-/<%= _id %>">'
     | <%- title %>
     == '</a>'
 
   td
-    == '[<a href="http://codeforces.com/contest/<%= id %>">Problems</a>]'
+    == '[<a href="http://codeforces.com/contest/<%= _id %>">Problems</a>]'
 
