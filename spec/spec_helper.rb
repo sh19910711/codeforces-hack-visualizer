@@ -11,6 +11,20 @@ end
 require "webmock"
 RSpec.configure do |config|
 
+  def stub_json(url, fixture_filename)
+    ::WebMock.stub_request(:get, url).to_return(
+      :body => ::File.read(fixtures fixture_filename),
+      :headers => {
+        "Content-Type" => "application/json",
+      },
+    )
+  end
+
+  config.before do
+    stub_json "http://codeforces.com/api/contest.list", "codeforces_api/contest_list.json"
+    stub_json "http://codeforces.com/api/contest.hacks?contestId=512", "codeforces_api/hacks_512.json"
+  end
+
   config.before do
     ::WebMock.stub_request(
       :get,
