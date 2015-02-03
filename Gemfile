@@ -15,6 +15,8 @@ group :development do
   gem "webmock"
   gem "database_cleaner"
   gem "mongoid-tree"
+  gem "better_errors"
+  gem "binding_of_caller"
 
   gem "shotgun"
 end
