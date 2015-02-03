@@ -1,4 +1,4 @@
-define ["marionette", "backbone"], (Marionette, Backbone)->
+define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
   class MainController extends Marionette.Controller
 
@@ -31,7 +31,6 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
           Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "#{contest.get "title"}"
 
       hacks = new Namespace::Collections::Hacks [], contestId: contestId
-      hacks.fetch()
-        .then ->
-          contest.set "topHackers", ["a", "b"]
+      hacks.fetch().then ->
+        contest.set "topHackers", hacks.topHackers(5)
 
