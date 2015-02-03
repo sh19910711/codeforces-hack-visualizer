@@ -10,6 +10,7 @@ describe ::Models::Contest do
 
       before { contest.fetch_hacks }
       it { expect(contest.hacks).to_not be_empty }
+      it { expect(contest.fetched_hacks).to be_truthy }
 
       context "hackers" do
         subject { contest.hackers }
