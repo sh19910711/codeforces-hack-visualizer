@@ -53,7 +53,7 @@ class Server < ::Sinatra::Base
   get "/api/contests/:contest_id/hacks" do |contest_id|
     contest = ::Models::Contest.find(contest_id.to_i)
     contest.fetch_hacks
-    contest.hacks.as_json.to_json
+    contest.hacks.map(&:as_json).to_json
   end
 
   patch "/api/users" do

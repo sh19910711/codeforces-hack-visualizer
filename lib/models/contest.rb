@@ -36,6 +36,7 @@ class Models::Contest
         :problem => hack.problem.index,
       )
     end
+    update_attributes! :fetched_hacks => true
   end
 
   def as_simple_json
