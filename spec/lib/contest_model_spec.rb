@@ -2,6 +2,22 @@ require "spec_helper"
 
 describe ::Models::Contest do
 
+  describe "#fetch_users" do
+
+    before do
+      stub_json_post "http://codeforces.com/api/user.info", "codeforces_api/user_info_for_hacks.json"
+    end
+
+    let!(:contest) { ::Models::Contest.create :id => 512, :title => "Contest Name" }
+
+    context "fetch_users" do
+      before { contest.hacks.create :hacker => "DmitriyH", :defender => "Fefer_Ivan" }
+      before { contest.fetch_users }
+      it { expect(contest.users).to_not be_empty }
+    end
+
+  end
+
   describe "#fetch_hacks" do
 
     let!(:contest) { ::Models::Contest.create :id => 512, :title => "Contest Name" }
@@ -21,6 +37,16 @@ describe ::Models::Contest do
 
       context "defender" do
         subject { contest.defender }
+        it { should include "MrDindows" }
+        it { should include "kcm1700" }
+        it { should include "rares.buhai" }
+      end
+
+      context "user_handles" do
+        subject { contest.user_handles }
+        it { should include "ahmed_aly" }
+        it { should include "Haghani" }
+        it { should include "IvL" }
         it { should include "MrDindows" }
         it { should include "kcm1700" }
         it { should include "rares.buhai" }
