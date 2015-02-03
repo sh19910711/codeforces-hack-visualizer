@@ -17,7 +17,7 @@ script#template-visualizer-view type="text/html"
 // show contest detail
 script#template-contest-detail-view type="text/html"
 
-  h1#contest-title.title-shadow
+  h1#contest-title.title-shadow.link-text-black
     == '<a href="http://codeforces.com/contest/<%- contestId %>">'
     | <%- title %>
     == '</a>'
@@ -26,8 +26,6 @@ script#template-contest-detail-view type="text/html"
       | Top-5 Hackers
     | : 
     <%= encodedTopHackersText() %>
-
-  hr
 
 
 // show table of contest list
