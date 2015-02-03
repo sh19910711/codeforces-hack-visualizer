@@ -5,6 +5,8 @@ require "slim/include"
 require "json"
 require "codeforces"
 
+require_relative "models"
+
 class Server < ::Sinatra::Base
 
   configure :development do
@@ -20,6 +22,7 @@ class Server < ::Sinatra::Base
   end
 
   get "/admin" do
+    slim :empty
   end
 
   get "/api/users" do
