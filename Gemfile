@@ -9,8 +9,13 @@ gem "mongoid"
 
 group :development do
   gem "rake"
+
   gem "rspec"
   gem "rack-test"
+  gem "webmock"
+  gem "database_cleaner"
+  gem "mongoid-tree"
+
   gem "shotgun"
 end
 
