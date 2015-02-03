@@ -1,9 +1,18 @@
 development:
   sessions:
     default:
-      database: cfhack
+      database: cfhack-development
       hosts:
         - localhost:27017
+
+test:
+  sessions:
+    default:
+      database: cfhack-test
+      hosts:
+        - localhost:27017
+
+
 
 production:
   sessions:
