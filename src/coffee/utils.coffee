@@ -24,14 +24,17 @@ define [], ->
       obj
 
 
+    @encodedNumber: (x)->
+      encodeURIComponent x
+
     @hackCounter: (plus, minus)->
       console.log plus, minus
       if plus > 0 && minus > 0
-        "(<span class=\"text-success\">+#{plus}</span> : <span class=\"text-warning\">-#{minus}</span>)"
+        "(<span class=\"text-success\">+#{Utils.encodedNumber plus}</span> : <span class=\"text-warning\">-#{Utils.encodedNumber minus}</span>)"
       else if plus > 0
-        "(<span class=\"text-success\">+#{plus}</span>)"
+        "(<span class=\"text-success\">+#{Utils.encodedNumber plus}</span>)"
       else if minus > 0
-        "(<span class=\"text-warning\">+#{minus}</span>)"
+        "(<span class=\"text-warning\">+#{Utils.encodedNumber minus}</span>)"
       else
         ""
 
