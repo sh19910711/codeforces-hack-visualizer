@@ -15,15 +15,13 @@ class Player
   startTimer: ->
     startTime = @startTime
     timeToHackFunc = (obj, hack)->
-      hackTime = Date.parse(hack.time)
-      dateTime = ( hackTime - startTime ) / 1000
-      obj[dateTime] ||= []
-      obj[dateTime].push hack
+      obj[hack.time] ||= []
+      obj[hack.time].push hack
       obj
     timeToHack = @hacks.reduce timeToHackFunc, {}
 
     curTime = 0
-    speed = 60 * 5
+    speed = 60 * 1
     @stop = false
 
     func = =>

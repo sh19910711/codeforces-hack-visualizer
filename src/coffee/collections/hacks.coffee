@@ -3,15 +3,17 @@ define ["underscore", "backbone"], (_, Backbone)->
   class Hacks extends Backbone.Collection
 
     initialize: (models, options)->
-      @contestId = options.contestId
+      @contest = options.contest
 
 
     url: ->
-      "/api/contests/#{@contestId}/hacks"
+      "/api/contests/#{@contest.id}/hacks"
 
 
-    model: (attrs, options)->
+    model: (attrs, options)=>
       Namespace = require("namespace")
+      timeDate = Date.parse(attrs.time)
+      attrs.time = ( timeDate - @contest.getStartTime() ) / 1000
       new Namespace::Models::Hack attrs, options
 
 
@@ -23,7 +25,7 @@ define ["underscore", "backbone"], (_, Backbone)->
     quickHackers: (limit)->
       @successfulHacks()
         .sortBy (hack)->
-          hack.getTimeDate()
+          hack.get "time"
         .uniq false, (hack)->
           hack.get "defender"
         .slice 0, limit

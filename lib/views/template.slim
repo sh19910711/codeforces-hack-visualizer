@@ -1,10 +1,16 @@
 // hack history
 script#template-hack-history-view type="text/html"
-  <%= encodedHackStatus() %>
+  td <%= time %>
+  td <%= message %>
 
 // hack historoies
 script#template-hack-histories-view type="text/html"
-  div.histories
+  table.histories.table.table-border
+    thead
+      tr
+        th Time
+        th Status
+    tbody
 
 // show admin view
 script#template-admin-view type="text/html"

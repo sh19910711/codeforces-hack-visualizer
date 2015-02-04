@@ -10,13 +10,13 @@ define ["backbone"], (Backbone)->
         defaultValues[handle] =
           positive: 0
           negative: 0
-          time: hack.getTimeDate()
+          time: hack.time
         obj.defaults defaultValues
 
       setExtendValues = ->
         extendValues = {}
         extendValues[handle] = obj.value()[handle]
-        extendValues[handle].time = Math.min(extendValues[handle].time, hack.getTimeDate())
+        extendValues[handle].time = Math.min(extendValues[handle].time, hack.time)
         if hack.isSucceeded()
           extendValues[handle].positive = extendValues[handle].positive + 1
         else
@@ -50,10 +50,16 @@ define ["backbone"], (Backbone)->
       "<span data-user-handle=\"#{encodedHandle}\" class=\"user #{Utils.resolveColor user.get("rating")}\">#{encodedHandle}</span>"
 
 
-    @durationAsMinutes: (from, to)->
+    @shortTimeText: (time)->
       Moment = require("moment/min/moment.min.js")
-      duration = Moment(to).diff Moment(from)
-      min = parseInt(Moment.duration(duration).asMinutes(), 10)
+      time = Moment.duration(time, "seconds")
+      pad = (s)->
+        "0#{s}".slice(-2)
+      "#{pad time.hours()}:#{pad time.minutes()}"
+
+    @minutesText: (time)->
+      Moment = require("moment/min/moment.min.js")
+      min = parseInt(Moment(seconds: time).minutes(), 10)
       "#{min} min."
 
 

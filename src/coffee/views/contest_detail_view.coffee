@@ -28,8 +28,7 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
           startTime = Date.parse(@start)
           @quickHackers
             .map (hack)->
-              hackTime = hack.getTimeDate()
-              "#{Utils.hackerHandleHTML(hack.get "defender")} <span class=\"text-danger\">(#{Utils.durationAsMinutes startTime, hackTime})</span>"
+              "#{Utils.hackerHandleHTML(hack.get "defender")} <span class=\"text-danger\">(#{Utils.minutesText(hack.get "time")})</span>"
             .value()
         else
           encodeURIComponent "loading..."

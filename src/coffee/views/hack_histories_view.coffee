@@ -4,6 +4,8 @@ define ["marionette"], (Marionette)->
 
     template: "#template-hack-histories-view"
 
+    childViewContainer: ".histories tbody"
+
     getChildView: ->
       Namespace = require("namespace")
       Namespace::Views::HackHistoryView

@@ -33,7 +33,7 @@ section.main > .container {
   .hack-visualizer {
     background: #333333;
     color: #ffffff;
-    min-height: 400px;
+    min-height: 480px;
 
     .visualizer {
       position: absolute;
@@ -55,8 +55,7 @@ section.main > .container {
         width: 48px;
         height: 24px;
         line-height: 24px;
-
-        &:hover { color: #ffffff; }
+        &:hover { background: #999999; color: #ffffff; }
         &:active{ background: #666666; }
       }
     }
@@ -64,14 +63,18 @@ section.main > .container {
 
   .hack-histories {
     background: #333333;
-    color: #ffffff;
-    height: 400px;
-    overflow-y: scroll;
+    color: rgba(255, 153, 51, 1);
+    height: 480px;
+    overflow-y: auto;
     scrollbar-base-color:#fff;
+
+    table td, th {
+      border-color: rgba(102, 102, 102, 0.2);
+    }
   }
   .hack-histories::-webkit-scrollbar { width: 3px; height: auto; }
   .hack-histories:hover::-webkit-scrollbar { width: 12px; height: auto; }
-  .hack-histories::-webkit-scrollbar-track { background: #000000; }
-  .hack-histories::-webkit-scrollbar-thumb { background:#ffffff; }
+  .hack-histories::-webkit-scrollbar-track { background: rgba(255, 0, 0, 0.5); }
+  .hack-histories::-webkit-scrollbar-thumb { background: rgba(255, 255, 0, 0.5); }
 
 }
