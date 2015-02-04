@@ -17,6 +17,9 @@ install:
   - bundle install -j4 --path vendor/bundle
   - npm install
 
+before_script:
+  - sh -e /etc/init.d/xvfb start
+
 script:
   - bundle exec rake spec
   - gulp test
@@ -24,4 +27,8 @@ script:
 cache:
   directories:
     - vendor/bundle
+
+env:
+  global:
+    - DISPLAY=":99.0"
 
