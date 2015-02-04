@@ -19,7 +19,9 @@ unless process.env["DEBUG"] == "yes"
 
 module.exports =
   
-  entry: "main"
+  entry:
+    "main": "main"
+    "worker": "worker"
  
   resolve:
     root: [
