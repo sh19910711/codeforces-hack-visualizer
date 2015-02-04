@@ -17,6 +17,8 @@ unless process.env["DEBUG"] == "yes"
     compress:
       warnings: false
 
+webpackPlugins.push new webpack.IgnorePlugin /^\.\/locale$/, /moment$/
+
 module.exports =
   
   entry:
