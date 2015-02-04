@@ -8,11 +8,18 @@ rvm:
 
 sudo: false
 
+before_install:
+  - npm install -g gulp bower
+  - npm prune
+  - bower prune
+
 install:
   - bundle install -j4 --path vendor/bundle
+  - npm install
 
 script:
   - bundle exec rake spec
+  - gulp test
 
 cache:
   directories:
