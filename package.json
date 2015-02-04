@@ -24,7 +24,10 @@
     "karma-chai": "^0.1.0",
     "karma-html2js-preprocessor": "^0.1.0",
     "karma-mocha": "^0.1.10",
+    "karma-phantomjs-launcher": "^0.1.4",
     "karma-sinon": "^1.0.4",
+    "karma-spec-reporter": "0.0.16",
+    "karma-webpack": "^1.5.0",
     "mocha": "^2.1.0",
     "sinon": "^1.12.2",
     "webpack": "^1.5.3"
