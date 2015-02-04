@@ -36,6 +36,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       hacks = new Namespace::Collections::Hacks [], contestId: contestId
       promiseHacks = hacks.fetch().then ->
         contest.set "topHackers", hacks.topHackers(5)
+        contest.set "quickHackers", hacks.quickHackers(5)
 
       Promise.all [promiseContest, promiseHacks]
         .then ->

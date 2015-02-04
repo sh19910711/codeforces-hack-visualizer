@@ -8,14 +8,25 @@ define ["marionette"], (Marionette)->
     template: "#template-contest-detail-view"
 
     templateHelpers: ->
+      Utils = require("utils")
+
       encodedTopHackersText: ->
         if @topHackers
-          @topHackers.chain()
+          @topHackers
             .map (hack)->
-              encodedHandle = encodeURIComponent(hack.handle)
-              "<span data-user-handle=\"#{encodedHandle}\">#{encodedHandle}</span> <span class=\"text-success\">(+#{hack.count})</span>"
+              "#{Utils.hackerHandleTag(hack.handle)} #{Utils.hackCounter hack.positive, hack.negative}"
             .value()
-            .join ", "
+        else
+          encodeURIComponent "loading..."
+
+      encodedFastestSuccessfulHack: ->
+        if @quickHackers
+          startTime = Date.parse(@start)
+          @quickHackers
+            .map (hack)->
+              hackTime = hack.getTimeDate()
+              "#{Utils.hackerHandleTag(hack.get "defender")} <span class=\"text-danger\">(#{Utils.durationAsMinutes startTime, hackTime})</span>"
+            .value()
         else
           encodeURIComponent "loading..."
 

@@ -26,6 +26,11 @@ script#template-contest-detail-view type="text/html"
       | Top-5 Hackers
     | : 
     <%= encodedTopHackersText() %>
+  p
+    strong
+      | Quick Hackers
+    | : 
+    <%= encodedFastestSuccessfulHack() %>
 
 
 // show table of contest list

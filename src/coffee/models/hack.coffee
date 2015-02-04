@@ -6,3 +6,9 @@ define ["backbone"], (Backbone)->
 
     idAttribute: "_id"
 
+    isSucceeded: ->
+      @flagSucceeded ||= @get("verdict")
+
+    getTimeDate: ->
+      @timeDate ||= Date.parse(@get "time")
+

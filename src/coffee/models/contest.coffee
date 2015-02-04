@@ -6,6 +6,7 @@ define ["backbone"], (Backbone)->
       contestId: undefined
       title: ""
       topHackers: undefined
+      successfulHacks: undefined
 
     idAttribute: "_id"
 

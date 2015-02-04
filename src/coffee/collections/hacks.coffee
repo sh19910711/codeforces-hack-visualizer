@@ -5,38 +5,44 @@ define ["underscore", "backbone"], (_, Backbone)->
     initialize: (models, options)->
       @contestId = options.contestId
 
+
     url: ->
       "/api/contests/#{@contestId}/hacks"
+
 
     model: (attrs, options)->
       Namespace = require("namespace")
       new Namespace::Models::Hack attrs, options
 
-    topHackers: (limit)->
-      countFunc = (obj, hack)->
-        handle = hack.get("hacker")
-        obj[handle] ||= count: 0, time: undefined
-        obj[handle].time ||= hack.get("time")
-        obj[handle].time = Math.min(obj[handle].time, hack.get "time")
-        obj[handle].count += 1
-        obj
 
-      # extract successful hacks
-      counted = @chain()
+    successfulHacks: ->
+      @chain()
         .select (hack)->
-          hack.get("verdict")
-        .inject countFunc, {}
+          hack.isSucceeded()
 
+    quickHackers: (limit)->
+      @successfulHacks()
+        .sortBy (hack)->
+          hack.getTimeDate()
+        .uniq false, (hack)->
+          hack.get "defender"
+        .slice 0, limit
+
+    topHackers: (limit)->
+      # extract successful hacks
       # sort by count, time...
-      sortedList = _.chain(counted)
+      Utils = require("utils")
+      @chain()
+        .inject Utils.countSuccessfulHack, _.chain({})
         .map (hack, handle)->
           handle: handle
-          count: hack.count
+          positive: hack.positive
+          negative: hack.negative
           time: hack.time
         .sortBy (hack)->
           -hack.time
         .sortBy (hack)->
-          hack.count
+          hack.positive * 100 - hack.negative * 50
         .reverse()
-        .slice 0, 5
+        .slice 0, limit
 
