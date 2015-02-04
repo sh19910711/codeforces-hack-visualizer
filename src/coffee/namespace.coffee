@@ -25,5 +25,8 @@ define ->
       ContestListView:      require("views/contest_list_view")
       ContestListItemView:  require("views/contest_list_item_view")
       VisualizerView:       require("views/visualizer_view")
+      VisualizerLayoutView: require("views/visualizer_layout_view")
       AdminView:            require("views/admin_view")
+      HackHistoriesView:    require("views/hack_histories_view")
+      HackHistoryView:      require("views/hack_history_view")
 

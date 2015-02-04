@@ -2,7 +2,7 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
 
   class AdminController extends Marionette.Controller
 
-    home: ->
+    showHome: ->
       Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "Admin"
 
       Namespace = require("namespace")

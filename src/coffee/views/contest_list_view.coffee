@@ -4,8 +4,6 @@ define ["marionette"], (Marionette)->
 
     template: "#template-contest-list-view"
 
-    initialize: ->
-
     childViewContainer: "tbody"
 
     getChildView: ->

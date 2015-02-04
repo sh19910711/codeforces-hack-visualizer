@@ -2,7 +2,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
   class MainController extends Marionette.Controller
 
-    home: ->
+    showHome: ->
       Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", ""
 
       Namespace = require("namespace")
@@ -14,31 +14,63 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
         .then null, (err)->
           throw "Error: fetch contests: #{err}"
 
-    contest: (contestId)->
-      Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "loading..."
 
+    showContest: (contestId)->
       Namespace = require("namespace")
+      contest = undefined
+      hacks = undefined
 
-      contest = new Namespace::Models::Contest
-        contestId: contestId
-        title: "loading..."
-      contest.id = contestId
-      contest_detail_view = new Namespace::Views::ContestDetailView
-        model: contest
-      Backbone.Wreqr.radio.vent.trigger "global", "app:headRegion:change", contest_detail_view
+      # sub-func
+      fetchHacks = ->
+        hacks = new Namespace::Collections::Hacks [], contestId: contest.id
+        hacks.fetch().then =>
+          contest.set "topHackers", hacks.topHackers(5)
+          contest.set "quickHackers", hacks.quickHackers(5)
 
-      promises = []
+      # sub-func
+      fetchContest = ->
+        Namespace = require("namespace")
+        contest = new Namespace::Models::Contest
+          contestId: contestId
+          title: "loading..."
+        contest.id = contestId
+        contest.fetch()
 
-      promiseContest = contest.fetch()
-        .then ->
+      # sub-func
+      setTitle = ->
+        Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "loading..."
+        promiseFetchContest.then ->
           Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "#{contest.get "title"}"
 
-      hacks = new Namespace::Collections::Hacks [], contestId: contestId
-      promiseHacks = hacks.fetch().then ->
-        contest.set "topHackers", hacks.topHackers(5)
-        contest.set "quickHackers", hacks.quickHackers(5)
+      # sub-func
+      createHeadView = ->
+        view = new Namespace::Views::ContestDetailView
+          model: contest
+        Backbone.Wreqr.radio.vent.trigger "global", "app:headRegion:change", view
 
-      Promise.all [promiseContest, promiseHacks]
-        .then ->
-          Backbone.Wreqr.radio.vent.trigger "global", "users:load", contest.id
+      # sub-func
+      createVisualizer = ->
+        layoutView = new Namespace::Views::VisualizerLayoutView
+        layoutView.on "show", ->
+          visualizerView = new Namespace::Views::VisualizerView
+          hackHistoriesView = new Namespace::Views::HackHistoriesView
+            collection: hacks
+          @visualizer.show visualizerView
+          @histories.show hackHistoriesView
+          @setDefaultLayout()
+        Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", layoutView
+
+      # sub-func
+      loadUsers = ->
+        Promise.all [promiseFetchContest, promiseFetchHacks]
+          .then ->
+            Backbone.Wreqr.radio.vent.trigger "global", "users:load", contest.id
+
+      # show contest
+      promiseFetchContest = fetchContest()
+      promiseFetchHacks = fetchHacks()
+      createHeadView()
+      createVisualizer()
+      setTitle()
+      loadUsers()
 
