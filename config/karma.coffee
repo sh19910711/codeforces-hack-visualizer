@@ -1,3 +1,6 @@
+karmaBrowsers = ["PhantomJS"]
+karmaBrowsers.push "Firefox" if process.env["TRAVIS"] == "true"
+
 module.exports = (config)->
 
   config.set
@@ -25,9 +28,7 @@ module.exports = (config)->
 
     autoWatch: false
 
-    browsers: [
-      "PhantomJS"
-    ]
+    browsers: karmaBrowsers
 
     singleRun: true
 
