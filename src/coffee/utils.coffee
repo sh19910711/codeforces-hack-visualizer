@@ -1,4 +1,4 @@
-define [], ->
+define ["backbone"], (Backbone)->
 
   class Utils
     # @params obj [Underscore.chain]
@@ -44,12 +44,14 @@ define [], ->
 
 
     @hackerHandleHTML: (handle)->
+      user = Backbone.Wreqr.radio.channel("global").reqres.request("user:find", handle)
       encodedHandle = encodeURIComponent(handle)
-      "<span data-user-handle=\"#{encodedHandle}\">#{encodedHandle}</span>"
+      return encodedHandle unless user
+      "<span data-user-handle=\"#{encodedHandle}\" class=\"user #{Utils.resolveColor user.get("rating")}\">#{encodedHandle}</span>"
 
 
     @durationAsMinutes: (from, to)->
-      Moment = require("moment")
+      Moment = require("moment/min/moment.min.js")
       duration = Moment(to).diff Moment(from)
       min = parseInt(Moment.duration(duration).asMinutes(), 10)
       "#{min} min."

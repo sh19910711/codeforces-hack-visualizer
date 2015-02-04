@@ -1,10 +1,9 @@
 // hack history
 script#template-hack-history-view type="text/html"
-  p hack
+  <%= encodedHackStatus() %>
 
 // hack historoies
 script#template-hack-histories-view type="text/html"
-  h2 Histories
   div.histories
 
 // show admin view
@@ -22,6 +21,11 @@ script#template-visualizer-layout-view type="text/html"
 // show visualizer
 script#template-visualizer-view type="text/html"
   div.visualizer
+  div.controller
+    button.player-button
+      i.fa.fa-play
+    button.player-button.hidden
+      i.fa.fa-stop
 
 // show contest detail
 script#template-contest-detail-view type="text/html"

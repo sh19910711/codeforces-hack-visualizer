@@ -16,9 +16,11 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
 
     showContest: (contestId)->
+      Promise = require("es6-promise").Promise unless Promise
       Namespace = require("namespace")
       contest = undefined
       hacks = undefined
+      hackHistories = new Backbone.Collection [], model: Namespace::Models::Hack
 
       # sub-func
       fetchHacks = ->
@@ -54,7 +56,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
         layoutView.on "show", ->
           visualizerView = new Namespace::Views::VisualizerView
           hackHistoriesView = new Namespace::Views::HackHistoriesView
-            collection: hacks
+            collection: hackHistories
           @visualizer.show visualizerView
           @histories.show hackHistoriesView
           @setDefaultLayout()
@@ -66,6 +68,27 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
           .then ->
             Backbone.Wreqr.radio.vent.trigger "global", "users:load", contest.id
 
+      startWorker = ->
+        worker = new Worker("/js/worker.js")
+
+        worker.addEventListener "message", (event)->
+          data = event.data
+          if data.type == "hack"
+            hackHistories.unshift data.hack
+
+        Promise.all [promiseFetchContest, promiseFetchHacks]
+          .then ->
+            hacksJSON = JSON.stringify(
+              hacks.map (hack)->
+                hack.toJSON()
+            )
+            worker.postMessage
+              type: "command"
+              command: "start"
+              hacks: hacksJSON
+              start: contest.get("start")
+              duration: contest.get("duration")
+
       # show contest
       promiseFetchContest = fetchContest()
       promiseFetchHacks = fetchHacks()
@@ -73,4 +96,5 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       createVisualizer()
       setTitle()
       loadUsers()
+      startWorker()
 

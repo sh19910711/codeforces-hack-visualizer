@@ -60,10 +60,12 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
 
       loadUsers = (contestId)->
         participants = new Namespace::Collections::Participants [], contestId: contestId
+        channel.reqres.setHandler "user:find", (handle)->
+          participants.find (user)->
+            handle == user.get("handle")
         promiseFetchParticipants = participants.fetch()
           .then ->
-            Backbone.Wreqr.radio.vent.trigger "global", "users:change"
-        Backbone.Wreqr.radio.vent.trigger "global", "users:change"
+            channel.vent.trigger "users:change"
 
       applyUserColors = ->
         jQuery = require("jquery")

@@ -13,3 +13,6 @@ define ["backbone"], (Backbone)->
     url: ->
       "/api/contests/#{@id}"
 
+    getStartTime: ->
+      @startTime ||= Date.parse(@get "start")
+

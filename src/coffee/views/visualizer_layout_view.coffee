@@ -9,6 +9,6 @@ define ["marionette"], (Marionette)->
       "histories": ".hack-histories"
 
     setDefaultLayout: ->
-      @visualizer.$el.addClass "col-sm-8"
-      @histories.$el.addClass "col-sm-4"
+      @visualizer.$el.addClass "col-sm-7"
+      @histories.$el.addClass "col-sm-5"
 

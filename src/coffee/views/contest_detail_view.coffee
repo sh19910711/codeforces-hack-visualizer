@@ -1,4 +1,4 @@
-define ["marionette"], (Marionette)->
+define ["marionette", "backbone"], (Marionette, Backbone)->
 
   class ContestDetailView extends Marionette.ItemView
 
@@ -7,6 +7,9 @@ define ["marionette"], (Marionette)->
     modelEvents:
       "change": "render"
 
+
+    initialize: ->
+      Backbone.Wreqr.radio.channel("global").vent.on "users:change", @render
 
     templateHelpers: ->
       Utils = require("utils")
