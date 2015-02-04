@@ -8,7 +8,7 @@ describe "MainRouter", ->
   context "prepare controller", ->
     before ->
       @controller = new Namespace::Controllers::MainController
-      @spyShowIndex = sinon.spy(@controller, "showIndex")
+      @spyShowHome = sinon.spy(@controller, "showHome")
       @spyShowContest = sinon.spy(@controller, "showContest")
 
     context "prepare router", ->
@@ -21,10 +21,10 @@ describe "MainRouter", ->
           Backbone.history.loadUrl "/"
 
         it "should called once", ->
-          expect(@spyShowIndex.calledOnce).to.be.true
+          expect(@spyShowHome.calledOnce).to.be.true
 
         it "should called with no args", ->
-          expect(@spyShowIndex.calledWith()).to.be.true
+          expect(@spyShowHome.calledWith()).to.be.true
 
       context "GET /contests/-/123", ->
         before ->
