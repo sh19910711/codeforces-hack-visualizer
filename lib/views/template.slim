@@ -1,6 +1,26 @@
+// player controller layout
+script#template-player-controller-layout type="text/html"
+  span.play-button
+    button.player-button
+      i.fa.fa-play
+    button.player-button.hidden
+      i.fa.fa-stop
+  |  
+  span.contest-time
+  |  
+
+// player controller
+script#template-player-contest-time type="text/html"
+  span <%- timeText() %>
+
+// player layout
+script#template-player-layout-view type="text/html"
+  div.visualizer
+  div.controller
+
 // hack history
 script#template-hack-history-view type="text/html"
-  td <%= time %>
+  td <%- time %>
   td <%= message %>
 
 // hack historoies
@@ -21,17 +41,12 @@ script#template-admin-view type="text/html"
 
 // show visualizer layout
 script#template-visualizer-layout-view type="text/html"
-  div.hack-visualizer
+  div.hack-visualizer-player
   div.hack-histories
 
 // show visualizer
 script#template-visualizer-view type="text/html"
-  div.visualizer
-  div.controller
-    button.player-button
-      i.fa.fa-play
-    button.player-button.hidden
-      i.fa.fa-stop
+  p visualizer
 
 // show contest detail
 script#template-contest-detail-view type="text/html"

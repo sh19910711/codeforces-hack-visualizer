@@ -30,12 +30,12 @@ section.main > .container {
 
 .main {
 
-  .hack-visualizer {
+  .hack-visualizer-player {
     background: #333333;
     color: #ffffff;
     min-height: 480px;
 
-    .visualizer {
+    .player {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -58,6 +58,7 @@ section.main > .container {
         &:hover { background: #999999; color: #ffffff; }
         &:active{ background: #666666; }
       }
+
     }
   }
 

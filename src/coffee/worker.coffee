@@ -12,6 +12,14 @@ class Player
         else if data.command == "stop"
           @stop = true
 
+
+  sendMessage: (message)->
+    postMessage type: "message", message: message
+
+  reportTime: (time)->
+    postMessage type: "time", time: time
+
+
   startTimer: ->
     startTime = @startTime
     timeToHackFunc = (obj, hack)->
@@ -21,13 +29,17 @@ class Player
     timeToHack = @hacks.reduce timeToHackFunc, {}
 
     curTime = 0
-    speed = 60 * 1
+    speed = 60 * 2
     @stop = false
 
+    callNext = =>
+      @reportTime curTime
+      setTimeout func, 1000
+
     func = =>
-      @stop = true if curTime >= @duration
       return if @stop
       for i in [1..speed]
+        break if @stop
         unless timeToHack[curTime] instanceof Array
           curTime += 1
           continue
@@ -36,7 +48,11 @@ class Player
             type: "hack"
             hack: hack
         curTime += 1
-      setTimeout func, 1000
+        if curTime >= @duration
+          @sendMessage "Contest is finished."
+          @stop = true
+      callNext() unless @stop
+    @sendMessage "Contest is started..."
     setTimeout func, 1000
 
 # create instance

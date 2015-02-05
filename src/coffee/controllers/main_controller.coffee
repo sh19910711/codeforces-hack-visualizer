@@ -4,16 +4,12 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
     showHome: ->
       Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", ""
-
       Namespace = require("namespace")
       contests = new Namespace::Collections::Contests []
       contest_list_view = new Namespace::Views::ContestListView
-      contest_list_view.collection = contests
-      Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", contest_list_view.render()
-      contest_list_view.collection.fetch()
-        .then null, (err)->
-          throw "Error: fetch contests: #{err}"
-
+        collection: contests
+      contests.fetch()
+      Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", contest_list_view
 
     showContest: (contestId)->
       Promise = require("es6-promise").Promise unless Promise
@@ -22,6 +18,8 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       contest = undefined
       hacks = undefined
       hackHistories = new Backbone.Collection [], model: Namespace::Models::Hack
+      contestTime = new Backbone.Model
+        time: 0
 
       # sub-func
       fetchHacks = ->
@@ -54,13 +52,33 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       # sub-func
       createVisualizer = ->
         layoutView = new Namespace::Views::VisualizerLayoutView
+        playerLayoutView = new Namespace::Views::PlayerLayoutView
+
         layoutView.on "show", ->
-          visualizerView = new Namespace::Views::VisualizerView
           hackHistoriesView = new Namespace::Views::HackHistoriesView
             collection: hackHistories
-          @visualizer.show visualizerView
+          @player.show playerLayoutView
           @histories.show hackHistoriesView
           @setDefaultLayout()
+
+        playerLayoutView.on "show", ->
+          visualizerView = new Namespace::Views::VisualizerView
+          controllerLayoutView = new Namespace::Views::PlayerControllerLayoutView
+          controllerLayoutView.on "show", ->
+            contestTimeView = new Marionette.ItemView
+              tagName: "span"
+              className: "contest-time player-contest-time"
+              template: "#template-player-contest-time"
+              model: contestTime
+              modelEvents:
+                change: "render"
+              templateHelpers:
+                timeText: ->
+                  Utils.shortTimeText(@time)
+            @contestTime.show contestTimeView
+          @visualizer.show visualizerView
+          @controller.show controllerLayoutView
+
         Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", layoutView
 
       # show contest
@@ -83,6 +101,13 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
                 time: Utils.shortTimeText(hack.get "time")
                 message: hack.getMessage()
               hackHistories.unshift message
+            else if data.type == "message"
+              message = new Backbone.Model
+                time: "system"
+                message: data.message
+              hackHistories.unshift message
+            else if data.type == "time"
+              contestTime.set time: data.time
 
           Promise.all [promiseFetchContest, promiseFetchHacks]
             .then ->
