@@ -27,8 +27,10 @@ gulp.task "main.js", ["bower"], ->
 
 gulp.task "style.css", ->
   sass = require("gulp-sass")
+  minify = require("gulp-minify-css")
   gulp.src ["src/sass/**/*.scss"]
     .pipe sass()
+    .pipe minify()
     .pipe gulp.dest("lib/public/css/")
 
 gulp.task "template.html", ->
