@@ -15,8 +15,8 @@ define ["backbone"], (Backbone)->
     getMessage: ->
       Utils = require("utils")
       if @isSucceeded()
-        "#{Utils.hackerHandleHTML(@get "defender")} is <span class=\"text-success\">successful</span> hacking attempt of #{Utils.hackerHandleHTML(@get "hacker")}'s solution"
+        "#{Utils.hackerHandleHTML(@get "defender")} got a <span class=\"text-success\">successful</span> hacking attempt of #{Utils.hackerHandleHTML(@get "hacker")}'s solution"
       else
-        "#{Utils.hackerHandleHTML(@get "defender")} is <span class=\"text-danger\">unsuccessful</span> hacking attempt of #{Utils.hackerHandleHTML(@get "hacker")}'s solution"
+        "#{Utils.hackerHandleHTML(@get "defender")} got a unsuccessful hacking attempt of #{Utils.hackerHandleHTML(@get "hacker")}'s solution"
 
 

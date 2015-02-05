@@ -70,7 +70,7 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
         participants = new Namespace::Collections::Participants [], contestId: contestId
         promiseFetchParticipants = participants.fetch()
           .then ->
-            channel.vent.trigger "users:change"
+            channel.vent.trigger "user:change"
 
       channel.reqres.setHandler "user:find", findUser
       channel.reqres.setHandler "user:all", allUsers

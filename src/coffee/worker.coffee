@@ -29,7 +29,7 @@ class Player
     timeToHack = @hacks.reduce timeToHackFunc, {}
 
     curTime = 0
-    speed = 60 * 2
+    speed = 60
     @stop = false
 
     callNext = =>

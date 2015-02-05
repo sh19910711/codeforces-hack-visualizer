@@ -9,7 +9,7 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
 
 
     initialize: ->
-      Backbone.Wreqr.radio.channel("global").vent.on "users:change", @render
+      Backbone.Wreqr.radio.channel("global").vent.on "user:change", @render
 
     templateHelpers: ->
       Utils = require("utils")

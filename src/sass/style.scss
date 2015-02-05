@@ -17,7 +17,7 @@ footer { text-align: right }
 .user-gray { color:gray }
 .user-admin { color:black }
 
-section.main > .container {
+section.main .container {
   box-sizing: border-box;
   background: #ffffff;
   padding: 15px 18px;
@@ -26,7 +26,10 @@ section.main > .container {
   border-left: 0;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
   margin-bottom: 5px;
+  &.no-padding { padding: 0 }
 }
+
+
 .link-text-black, .link-text-black a { color: #000000 }
 
 .main {
@@ -107,6 +110,17 @@ section.main > .container {
 
     table td, th {
       border-color: rgba(102, 102, 102, 0.2);
+    }
+
+    table .hack {
+      .text-success {
+        color: rgba(0, 204, 0, 1);
+        font-weight: bold;
+        font-style: italic;
+      }
+      .text-unsuccess {
+        color: rgba(255, 255, 255, 0.3);
+      }
     }
   }
   .hack-histories::-webkit-scrollbar { width: 3px; height: auto; }

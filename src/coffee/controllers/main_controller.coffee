@@ -12,16 +12,16 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", contest_list_view
 
     showContest: (contestId)->
-      Promise = require("es6-promise").Promise unless Promise
+      Promise   = require("es6-promise").Promise unless Promise
       Namespace = require("namespace")
-      Utils = require("utils")
-      contest = undefined
-      hacks = undefined
+      Utils     = require("utils")
+      contest   = undefined
+      hacks     = undefined
       histories = new Backbone.Collection([], model: Namespace::Models::Hack)
+      worker    = new Worker("/js/worker.js")
       hackHistories = new Backbone.Collection([], model: Namespace::Models::Hack)
       contestTime = new Backbone.Model
         time: 0
-      worker = new Worker("/js/worker.js")
 
       # sub-func
       fetchHacks = ->

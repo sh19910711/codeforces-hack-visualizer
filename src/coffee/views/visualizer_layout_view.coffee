@@ -2,6 +2,8 @@ define ["marionette"], (Marionette)->
 
   class VisualizerLayoutView extends Marionette.LayoutView
 
+    className: "container no-padding"
+
     template: "#template-visualizer-layout-view"
 
     regions:
