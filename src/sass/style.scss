@@ -6,6 +6,7 @@ html { overflow-y: scroll }
 footer { text-align: right }
 .title-shadow { text-shadow: 1px 1px rgba(0, 0, 0, 0.15) }
 
+.user a { color: inherit }
 .user { font-weight: bold }
 .user-red { color:red }
 .user-yellow { color:#bbbb00 }
@@ -17,7 +18,7 @@ footer { text-align: right }
 .user-admin { color:black }
 
 section.main > .container {
-  border-box: box-sizing;
+  box-sizing: border-box;
   background: #ffffff;
   padding: 15px 18px;
   border: 1px solid rgba(234, 234, 234, 1);

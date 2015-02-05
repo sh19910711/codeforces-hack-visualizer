@@ -47,7 +47,7 @@ define ["backbone"], (Backbone)->
       user = Backbone.Wreqr.radio.channel("global").reqres.request("user:find", handle)
       encodedHandle = encodeURIComponent(handle)
       return encodedHandle unless user
-      "<span data-user-handle=\"#{encodedHandle}\" class=\"user #{Utils.resolveColor user.get("rating")}\">#{encodedHandle}</span>"
+      "<span data-user-handle=\"#{encodedHandle}\" class=\"user #{Utils.resolveColor user.get("rating")}\"><a href=\"http://codeforces.com/profile/#{encodedHandle}\">#{encodedHandle}</a></span>"
 
 
     @shortTimeText: (time)->
