@@ -17,9 +17,11 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
       Utils = require("utils")
       contest = undefined
       hacks = undefined
-      hackHistories = new Backbone.Collection [], model: Namespace::Models::Hack
+      histories = new Backbone.Collection([], model: Namespace::Models::Hack)
+      hackHistories = new Backbone.Collection([], model: Namespace::Models::Hack)
       contestTime = new Backbone.Model
         time: 0
+      worker = new Worker("/js/worker.js")
 
       # sub-func
       fetchHacks = ->
@@ -50,55 +52,75 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
         Backbone.Wreqr.radio.vent.trigger "global", "app:headRegion:change", view
 
       # sub-func
-      createVisualizer = ->
+      initVisualizer = ->
         layoutView = new Namespace::Views::VisualizerLayoutView
         playerLayoutView = new Namespace::Views::PlayerLayoutView
+        visualizerView = new Namespace::Views::VisualizerView
+          collection: hackHistories
+        controllerLayoutView = new Namespace::Views::PlayerControllerLayoutView
 
         layoutView.on "show", ->
-          hackHistoriesView = new Namespace::Views::HackHistoriesView
-            collection: hackHistories
+          historiesView = new Namespace::Views::HackHistoriesView
+            collection: histories
           @player.show playerLayoutView
-          @histories.show hackHistoriesView
+          @histories.show historiesView
           @setDefaultLayout()
 
         playerLayoutView.on "show", ->
-          visualizerView = new Namespace::Views::VisualizerView
-          controllerLayoutView = new Namespace::Views::PlayerControllerLayoutView
-          controllerLayoutView.on "show", ->
-            contestTimeView = new Marionette.ItemView
-              tagName: "span"
-              className: "contest-time player-contest-time"
-              template: "#template-player-contest-time"
-              model: contestTime
-              modelEvents:
-                "change:time": "render"
-              templateHelpers:
-                timeText: ->
-                  Utils.shortTimeText(@time)
-            class SeekBarView extends Marionette.ItemView
-              tagName: "div"
-              className: "seek-bar"
-              template: "#template-player-seekbar"
-              model: contestTime
-              modelEvents: ->
-                "change:time": "applyTime"
-              ui: ->
-                progressBar: ".progress-bar"
-              events: ->
-                "mousemove": "moveTooltip"
-              initialize: (options)->
-                @duration = options.duration
-              applyTime: ->
-                curTime = @model.get("time")
-                @ui.progressBar.css "width", "#{curTime / @duration * 100.0}%"
-            seekBarView = new SeekBarView
-              duration: contest.get("duration")
-            @contestTime.show contestTimeView
-            @seekBar.show seekBarView
           @visualizer.show visualizerView
           @controller.show controllerLayoutView
 
+        controllerLayoutView.on "show", ->
+          contestTimeView = new Namespace::Views::PlayerContestTimeView
+            model: contestTime
+          seekbarView = new Namespace::Views::PlayerSeekbarView
+            model: contestTime
+            duration: contest.get("duration")
+          @contestTime.show contestTimeView
+          @seekBar.show seekbarView
+
         Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", layoutView
+
+      # sub-func
+      initWorkerEvents = ->
+        onHack = (data)->
+          hack = new Namespace::Models::Hack(data.hack)
+          message = new Backbone.Model
+            time: Utils.shortTimeText(hack.get "time")
+            message: hack.getMessage()
+          histories.unshift message
+          hackHistories.add data.hack
+
+        onMessage = (data)->
+          message = new Backbone.Model
+            time: "System"
+            message: data.message
+          histories.unshift message
+
+        onTime = (data)->
+          contestTime.set time: data.time
+
+        worker.addEventListener "message", (event)->
+          data = event.data
+          if data.type == "hack"
+            onHack data
+          else if data.type == "message"
+            onMessage data
+          else if data.type == "time"
+            onTime data
+
+      # sub-func
+      startContestWorker = ->
+        hacksJSON = JSON.stringify(
+          hacks.map (hack)->
+            hack.toJSON()
+        )
+        worker.postMessage
+          type: "command"
+          command: "start"
+          hacks: hacksJSON
+          start: contest.get("start")
+          duration: contest.get("duration")
 
       # show contest
       promiseFetchContest = fetchContest()
@@ -110,40 +132,14 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
               Backbone.Wreqr.radio.vent.trigger "global", "users:load", contest.id
 
         startWorker = ->
-          worker = new Worker("/js/worker.js")
-
-          worker.addEventListener "message", (event)->
-            data = event.data
-            if data.type == "hack"
-              hack = new Namespace::Models::Hack(data.hack)
-              message = new Backbone.Model
-                time: Utils.shortTimeText(hack.get "time")
-                message: hack.getMessage()
-              hackHistories.unshift message
-            else if data.type == "message"
-              message = new Backbone.Model
-                time: "System"
-                message: data.message
-              hackHistories.unshift message
-            else if data.type == "time"
-              contestTime.set time: data.time
-
+          initWorkerEvents()
           Promise.all [promiseFetchContest, promiseFetchHacks]
             .then ->
-              hacksJSON = JSON.stringify(
-                hacks.map (hack)->
-                  hack.toJSON()
-              )
-              worker.postMessage
-                type: "command"
-                command: "start"
-                hacks: hacksJSON
-                start: contest.get("start")
-                duration: contest.get("duration")
+              startContestWorker()
 
         promiseFetchHacks = fetchHacks()
         createHeadView()
-        createVisualizer()
+        initVisualizer()
         setTitle()
         loadUsers()
         startWorker()

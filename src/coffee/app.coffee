@@ -57,32 +57,24 @@ define ["marionette", "backbone"], (Marionette, Backbone)->
       channel = Backbone.Wreqr.radio.channel("global")
       participants = undefined
       promiseFetchParticipants = undefined
+      participants = undefined
+
+      findUser = (handle)->
+        participants && participants.find (user)->
+          handle == user.get("handle")
+
+      allUsers = ->
+        participants
 
       loadUsers = (contestId)->
         participants = new Namespace::Collections::Participants [], contestId: contestId
-        channel.reqres.setHandler "user:find", (handle)->
-          participants.find (user)->
-            handle == user.get("handle")
         promiseFetchParticipants = participants.fetch()
           .then ->
             channel.vent.trigger "users:change"
 
-      applyUserColors = ->
-        jQuery = require("jquery")
-        Utils = require("utils")
-        promiseFetchParticipants
-          .then ->
-            participants.each (user)->
-              anchor = jQuery(document.createElement "a")
-                .attr "href", "http://codeforces.com/profile/#{user.id}"
-              jQuery("span[data-user-handle=\"#{user.id}\"]")
-                .not ".user"
-                .addClass "user"
-                .addClass Utils.resolveColor(user.get "rating")
-                .wrap anchor
-
+      channel.reqres.setHandler "user:find", findUser
+      channel.reqres.setHandler "user:all", allUsers
       channel.vent.on "users:load", loadUsers
-      channel.vent.on "users:change", applyUserColors
 
 
     startBackboneHistory: ->

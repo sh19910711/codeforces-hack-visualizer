@@ -27,6 +27,8 @@ define ->
       ContestTimeView:      require("views/contest_time_view")
       PlayerLayoutView:     require("views/player_layout_view")
       PlayerControllerLayoutView: require("views/player_controller_layout_view")
+      PlayerContestTimeView: require("views/player_contest_time_view")
+      PlayerSeekbarView:    require("views/player_seekbar_view")
       VisualizerView:       require("views/visualizer_view")
       VisualizerLayoutView: require("views/visualizer_layout_view")
       AdminView:            require("views/admin_view")

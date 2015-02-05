@@ -44,9 +44,14 @@ section.main > .container {
       height: 100%;
     }
 
-    .visuzlizer {
+    .visualizer {
       background: #000;
-      margin: 0px;
+
+      svg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .controller {
