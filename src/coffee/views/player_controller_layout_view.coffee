@@ -6,5 +6,6 @@ define ["marionette"], (Marionette)->
 
     regions:
       contestTime: ".contest-time"
+      seekBar: ".seek-bar-region"
 
 

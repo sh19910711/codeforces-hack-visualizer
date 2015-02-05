@@ -71,11 +71,30 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
               template: "#template-player-contest-time"
               model: contestTime
               modelEvents:
-                change: "render"
+                "change:time": "render"
               templateHelpers:
                 timeText: ->
                   Utils.shortTimeText(@time)
+            class SeekBarView extends Marionette.ItemView
+              tagName: "div"
+              className: "seek-bar"
+              template: "#template-player-seekbar"
+              model: contestTime
+              modelEvents: ->
+                "change:time": "applyTime"
+              ui: ->
+                progressBar: ".progress-bar"
+              events: ->
+                "mousemove": "moveTooltip"
+              initialize: (options)->
+                @duration = options.duration
+              applyTime: ->
+                curTime = @model.get("time")
+                @ui.progressBar.css "width", "#{curTime / @duration * 100.0}%"
+            seekBarView = new SeekBarView
+              duration: contest.get("duration")
             @contestTime.show contestTimeView
+            @seekBar.show seekBarView
           @visualizer.show visualizerView
           @controller.show controllerLayoutView
 
@@ -103,7 +122,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
               hackHistories.unshift message
             else if data.type == "message"
               message = new Backbone.Model
-                time: "system"
+                time: "System"
                 message: data.message
               hackHistories.unshift message
             else if data.type == "time"

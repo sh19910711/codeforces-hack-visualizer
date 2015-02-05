@@ -60,9 +60,6 @@ class Server < ::Sinatra::Base
     contest.users.map(&:as_simple_json).to_json
   end
 
-  patch "/api/users" do
-  end
-
   patch "/api/contests" do
     ::Models::Contest.fetch_all
     {}.to_json

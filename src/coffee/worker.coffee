@@ -29,7 +29,7 @@ class Player
     timeToHack = @hacks.reduce timeToHackFunc, {}
 
     curTime = 0
-    speed = 60 * 2
+    speed = 60 * 1
     @stop = false
 
     callNext = =>
@@ -49,11 +49,12 @@ class Player
             hack: hack
         curTime += 1
         if curTime >= @duration
+          curTime = @duration
           @sendMessage "Contest is finished."
           @stop = true
-      callNext() unless @stop
+      callNext()
     @sendMessage "Contest is started..."
-    setTimeout func, 1000
+    setTimeout func, 100
 
 # create instance
 player = new Player
