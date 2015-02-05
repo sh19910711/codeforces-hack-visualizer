@@ -18,29 +18,29 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
       @on "show", ->
         svgElement = @ui.svg.get(0)
         @svg = d3.select(svgElement)
-        @nodes = []
-        @links = []
+        @linkLayer = @svg.append("g").attr("class", "links")
+        @nodeLayer = @svg.append("g").attr("class", "nodes")
         @force = d3.layout.force()
-          .nodes(@nodes)
-          .links(@links)
           .size [400, 300]
           .linkStrength 0.1
           .friction 0.9
-          .linkDistance 20
+          .linkDistance 10
           .charge -30
           .gravity 0.1
           .on "tick", @tick
+        @nodes = @force.nodes()
+        @links = @force.links()
 
     loadParticipants: =>
       participants = channel.reqres.request "user:all"
       @handleToIndex = {}
-      @nodes = participants.map (user, index)=>
+      participants.each (user, index)=>
         userHandleName = user.get("handle")
         user =
           handle: userHandleName
+          rating: user.get("rating")
         @handleToIndex[userHandleName] = user
-        user
-      @resetForce()
+        @nodes.push user
       @redraw()
 
     addNode: (hack)->
@@ -59,37 +59,35 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
         .start()
 
     tick: (e)=>
-      k = 4 * e.alpha
-
-      @nodes.forEach (node)->
-        node.x += k
-        node.y += k
-
-      @selectNode
-        .attr "cx", (node)-> node.x
-        .attr "cy", (node)-> node.y
+      offset = 100
 
       @selectLink
-        .attr "x1", (link)-> link.source.x
-        .attr "y1", (link)-> link.source.y
-        .attr "x2", (link)-> link.target.x
-        .attr "y2", (link)-> link.target.y
+        .attr "x1", (link)-> link.source.x + offset
+        .attr "y1", (link)-> link.source.y + offset
+        .attr "x2", (link)-> link.target.x + offset
+        .attr "y2", (link)-> link.target.y + offset
+
+      @selectNode
+        .attr "cx", (node)-> node.x + offset
+        .attr "cy", (node)-> node.y + offset
 
     redraw: ->
-      @selectNode = @svg.selectAll(".node")
-        .data @nodes
+      Utils = require("utils")
+
+      @selectNode = @nodeLayer.selectAll(".node").data(@nodes)
+      @selectLink = @linkLayer.selectAll(".link").data(@links)
+
+      @selectNode
         .enter()
         .append "circle"
-        .attr "class", "node"
-        .attr "r", "6px"
+        .attr "r", "5px"
         .attr "cx", (node)-> node.x
         .attr "cy", (node)-> node.y
-        .style "fill", "rgba(255, 0, 0, 0.5)"
-        .style "stroke", "#000000"
-        .style "stroke-width", "1px"
+        .attr "handle", (node)-> node.handle
+        .attr "class", (node)-> "node " + Utils.resolveColor(node.rating)
+        .call @force.drag
 
-      @selectLink = @svg.selectAll(".link")
-        .data @links
+      @selectLink
         .enter()
         .append "line"
         .attr "class", "link"
@@ -97,6 +95,6 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
         .attr "y1", (node)-> node.source.y
         .attr "x2", (node)-> node.target.x
         .attr "y2", (node)-> node.target.y
-        .style "stroke", "#ffffff"
-        .style "stroke-width", "1px"
+
+      @resetForce()
 
