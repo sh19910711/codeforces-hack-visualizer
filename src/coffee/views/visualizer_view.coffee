@@ -13,7 +13,10 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
       svg: "svg"
 
     initialize: ->
+      @enableForce = true
       channel.vent.on "user:change", @loadParticipants
+      channel.vent.on "player:start", @startForce
+      channel.vent.on "player:stop", @stopForce
 
       @on "show", ->
         svgElement = @ui.svg.get(0)
@@ -22,14 +25,22 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
         @nodeLayer = @svg.append("g").attr("class", "nodes")
         @force = d3.layout.force()
           .size [400, 300]
-          .linkStrength 0.1
+          .linkStrength 0.12
           .friction 0.9
-          .linkDistance 10
+          .linkDistance 20
           .charge -30
           .gravity 0.1
           .on "tick", @tick
         @nodes = @force.nodes()
         @links = @force.links()
+
+    startForce: =>
+      @enableForce = true
+      @redraw()
+
+    stopForce: =>
+      @enableForce = false
+      @redraw()
 
     loadParticipants: =>
       participants = channel.reqres.request "user:all"
@@ -95,6 +106,8 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
         .attr "y1", (node)-> node.source.y
         .attr "x2", (node)-> node.target.x
         .attr "y2", (node)-> node.target.y
+
+      @selectNode.classed "fixed", (node)=> node.fixed = not @enableForce
 
       @resetForce()
 

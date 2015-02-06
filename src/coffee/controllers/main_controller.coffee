@@ -2,14 +2,16 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
   class MainController extends Marionette.Controller
 
+    channel = Backbone.Wreqr.radio.channel("global")
+
     showHome: ->
-      Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", ""
+      channel.vent.trigger "app:title:change", ""
       Namespace = require("namespace")
       contests = new Namespace::Collections::Contests []
       contest_list_view = new Namespace::Views::ContestListView
         collection: contests
       contests.fetch()
-      Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", contest_list_view
+      channel.vent.trigger "app:mainRegion:change", contest_list_view
 
     showContest: (contestId)->
       Promise   = require("es6-promise").Promise unless Promise
@@ -41,15 +43,15 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
       # sub-func
       setTitle = ->
-        Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "loading..."
+        channel.vent.trigger "app:title:change", "loading..."
         promiseFetchContest.then ->
-          Backbone.Wreqr.radio.vent.trigger "global", "app:title:change", "#{contest.get "title"}"
+          channel.vent.trigger "app:title:change", "#{contest.get "title"}"
 
       # sub-func
       createHeadView = ->
         view = new Namespace::Views::ContestDetailView
           model: contest
-        Backbone.Wreqr.radio.vent.trigger "global", "app:headRegion:change", view
+        channel.vent.trigger "app:headRegion:change", view
 
       # sub-func
       initVisualizer = ->
@@ -79,7 +81,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
           @contestTime.show contestTimeView
           @seekBar.show seekbarView
 
-        Backbone.Wreqr.radio.vent.trigger "global", "app:mainRegion:change", layoutView
+        channel.vent.trigger "app:mainRegion:change", layoutView
 
       # sub-func
       initWorkerEvents = ->
@@ -109,6 +111,15 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
           else if data.type == "time"
             onTime data
 
+        channel.vent.on "player:start", ->
+          worker.postMessage
+            type: "timer:start"
+
+        channel.vent.on "player:stop", ->
+          worker.postMessage
+            type: "timer:stop"
+
+
       # sub-func
       startContestWorker = ->
         hacksJSON = JSON.stringify(
@@ -116,11 +127,15 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
             hack.toJSON()
         )
         worker.postMessage
-          type: "command"
-          command: "start"
+          type: "set:hacks"
           hacks: hacksJSON
-          start: contest.get("start")
-          duration: contest.get("duration")
+        # after load users
+        channel.vent.on "user:change", ->
+          worker.postMessage
+            type: "set:contest"
+            start: contest.get("start")
+            duration: contest.get("duration")
+          channel.vent.trigger "player:start"
 
       # show contest
       promiseFetchContest = fetchContest()
@@ -129,7 +144,7 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
         loadUsers = ->
           Promise.all [promiseFetchContest, promiseFetchHacks]
             .then ->
-              Backbone.Wreqr.radio.vent.trigger "global", "users:load", contest.id
+              channel.vent.trigger "users:load", contest.id
 
         startWorker = ->
           initWorkerEvents()
