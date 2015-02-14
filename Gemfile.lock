@@ -20,7 +20,7 @@ GEM
       debug_inspector (>= 0.0.1)
     bson (2.3.0)
     builder (3.2.2)
-    codeforces (0.0.10)
+    codeforces (0.0.12)
       addressable (~> 2.3)
       sawyer (~> 0.6)
     coderay (1.1.0)
