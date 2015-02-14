@@ -52,6 +52,11 @@ script#template-visualizer-layout-view type="text/html"
 // show visualizer
 script#template-visualizer-view type="text/html"
   svg
+    defs
+      marker#arrow-ok markerUnits="strokeWidth" markerWidth="9" markerHeight="9" viewBox="0 0 10 10" refX="20" refY="5" orient="auto"
+        polygon points="0,0 4,5 0,10 10,5 "
+      marker#arrow-ng markerUnits="strokeWidth" markerWidth="9" markerHeight="9" viewBox="0 0 10 10" refX="20" refY="5" orient="auto"
+        polygon points="0,0 4,5 0,10 10,5 "
 
 // show contest detail
 script#template-contest-detail-view type="text/html"

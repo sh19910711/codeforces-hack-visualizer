@@ -27,7 +27,7 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
           .size [400, 300]
           .linkStrength 0.12
           .friction 0.9
-          .linkDistance 20
+          .linkDistance 25
           .charge -30
           .gravity 0.1
           .on "tick", @tick
@@ -60,6 +60,7 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
       link =
         source: @handleToIndex[hacker]
         target: @handleToIndex[defender]
+        verdict: hack.get("verdict")
       @links.push link
       @redraw()
 
@@ -91,7 +92,7 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
       @selectNode
         .enter()
         .append "circle"
-        .attr "r", "5px"
+        .attr "r", "3px"
         .attr "cx", (node)-> node.x
         .attr "cy", (node)-> node.y
         .attr "handle", (node)-> node.handle
@@ -106,6 +107,11 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
         .attr "y1", (node)-> node.source.y
         .attr "x2", (node)-> node.target.x
         .attr "y2", (node)-> node.target.y
+        .attr "marker-end", (node)->
+          if node.verdict
+            "url(#arrow-ok)"
+          else
+            "url(#arrow-ng)"
 
       @selectNode.classed "fixed", (node)=> node.fixed = not @enableForce
 

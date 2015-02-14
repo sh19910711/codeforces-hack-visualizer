@@ -32,21 +32,25 @@ section.main .container {
 svg {
   .node {
     fill: #999999;
-    stroke: #000000;
-    stroke-width: 1px;
     &.user-red { fill: #ff3333 }
     &.user-yellow { fill: #cccc00 }
-    &.user-violet { fill: #cc66cc }
+    &.user-violet { fill: #9933cc }
     &.user-orange { fill: #ff9900 }
-    &.user-blue { fill: #0099ff }
-    &.user-green { fill: #66cc66 }
+    &.user-blue { fill: #0099cc }
+    &.user-green { fill: #339933 }
     &.user-gray { fill: #999999 }
     &.user-admin { fill:black }
   }
   .link {
-    stroke: #99ccff;
-    stroke-width: 3px;
+    stroke: #999999;
+    stroke-width: 1px;
     stroke-dasharray: 5, 5;
+  }
+  #arrow-ok {
+    fill: rgba(0, 204, 0, 1)
+  }
+  #arrow-ng {
+    fill: rgba(204, 0, 0, 1)
   }
 }
 
