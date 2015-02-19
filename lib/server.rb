@@ -8,6 +8,8 @@ require_relative "models"
 
 class Server < ::Sinatra::Base
 
+  VERSION = "v1424307870"
+
   configure :development do
     require "sinatra/reloader"
     register ::Sinatra::Reloader
