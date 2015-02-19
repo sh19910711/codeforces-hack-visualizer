@@ -1,6 +1,9 @@
-define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
+define ["marionette", "backbone", "d3", "jquery"], (Marionette, Backbone, d3, jQuery)->
 
   class VisualizerView extends Marionette.ItemView
+
+    DEFAULT_WIDTH   = 400
+    DEFAULT_HEIGHT  = 300
 
     channel = Backbone.Wreqr.radio.channel("global")
 
@@ -9,30 +12,47 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
     collectionEvents:
       "add": "addNode"
 
+    events:
+      "dblclick @ui.svg": "fullScreen"
+
     ui: ->
       svg: "svg"
 
     initialize: ->
+      @enableFullScreen = false
       @enableForce = true
       channel.vent.on "user:change", @loadParticipants
       channel.vent.on "player:start", @startForce
       channel.vent.on "player:stop", @stopForce
+      channel.vent.on "player:fullScreen", @fullScreen
 
       @on "show", ->
         svgElement = @ui.svg.get(0)
         @svg = d3.select(svgElement)
+        @svg.attr "viewBox", "-100 -100 800 800"
         @linkLayer = @svg.append("g").attr("class", "links")
         @nodeLayer = @svg.append("g").attr("class", "nodes")
         @force = d3.layout.force()
-          .size [400, 300]
+          .size [DEFAULT_WIDTH, DEFAULT_HEIGHT]
           .linkStrength 0.12
           .friction 0.9
-          .linkDistance 20
+          .linkDistance 25
           .charge -30
           .gravity 0.1
           .on "tick", @tick
         @nodes = @force.nodes()
         @links = @force.links()
+
+
+    fullScreen: =>
+      if @enableFullScreen
+        jQuery("body").removeClass "full-screen"
+        @svg.attr "class", ""
+        @enableFullScreen = false
+      else
+        jQuery("body").addClass "full-screen"
+        @svg.attr "class", "full-screen"
+        @enableFullScreen = true
 
     startForce: =>
       @enableForce = true
@@ -60,6 +80,7 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
       link =
         source: @handleToIndex[hacker]
         target: @handleToIndex[defender]
+        verdict: hack.get("verdict")
       @links.push link
       @redraw()
 
@@ -91,7 +112,7 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
       @selectNode
         .enter()
         .append "circle"
-        .attr "r", "5px"
+        .attr "r", "3px"
         .attr "cx", (node)-> node.x
         .attr "cy", (node)-> node.y
         .attr "handle", (node)-> node.handle
@@ -106,6 +127,11 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
         .attr "y1", (node)-> node.source.y
         .attr "x2", (node)-> node.target.x
         .attr "y2", (node)-> node.target.y
+        .attr "marker-end", (node)->
+          if node.verdict
+            "url(#arrow-ok)"
+          else
+            "url(#arrow-ng)"
 
       @selectNode.classed "fixed", (node)=> node.fixed = not @enableForce
 
