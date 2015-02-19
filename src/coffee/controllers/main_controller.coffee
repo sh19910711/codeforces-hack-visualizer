@@ -70,6 +70,8 @@ define ["underscore", "marionette", "backbone"], (_, Marionette, Backbone)->
 
         playerLayoutView.on "show", ->
           @visualizer.show visualizerView
+          visualizerView.on "fullscreen", =>
+            console.log "full"
           @controller.show controllerLayoutView
 
         controllerLayoutView.on "show", ->
