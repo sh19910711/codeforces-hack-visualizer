@@ -1,6 +1,9 @@
-define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
+define ["marionette", "backbone", "d3", "jquery"], (Marionette, Backbone, d3, jQuery)->
 
   class VisualizerView extends Marionette.ItemView
+
+    DEFAULT_WIDTH   = 400
+    DEFAULT_HEIGHT  = 300
 
     channel = Backbone.Wreqr.radio.channel("global")
 
@@ -9,22 +12,28 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
     collectionEvents:
       "add": "addNode"
 
+    events:
+      "dblclick @ui.svg": "fullScreen"
+
     ui: ->
       svg: "svg"
 
     initialize: ->
+      @enableFullScreen = false
       @enableForce = true
       channel.vent.on "user:change", @loadParticipants
       channel.vent.on "player:start", @startForce
       channel.vent.on "player:stop", @stopForce
+      channel.vent.on "player:fullScreen", @fullScreen
 
       @on "show", ->
         svgElement = @ui.svg.get(0)
         @svg = d3.select(svgElement)
+        @svg.attr "viewBox", "-100 -100 800 800"
         @linkLayer = @svg.append("g").attr("class", "links")
         @nodeLayer = @svg.append("g").attr("class", "nodes")
         @force = d3.layout.force()
-          .size [400, 300]
+          .size [DEFAULT_WIDTH, DEFAULT_HEIGHT]
           .linkStrength 0.12
           .friction 0.9
           .linkDistance 25
@@ -33,6 +42,17 @@ define ["marionette", "backbone", "d3"], (Marionette, Backbone, d3)->
           .on "tick", @tick
         @nodes = @force.nodes()
         @links = @force.links()
+
+
+    fullScreen: =>
+      if @enableFullScreen
+        jQuery("body").removeClass "full-screen"
+        @svg.attr "class", ""
+        @enableFullScreen = false
+      else
+        jQuery("body").addClass "full-screen"
+        @svg.attr "class", "full-screen"
+        @enableFullScreen = true
 
     startForce: =>
       @enableForce = true
