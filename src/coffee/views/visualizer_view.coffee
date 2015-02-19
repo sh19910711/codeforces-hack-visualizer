@@ -12,7 +12,7 @@ define ["marionette", "backbone", "d3", "jquery"], (Marionette, Backbone, d3, jQ
     collectionEvents:
       "add": "addNode"
 
-    events:
+    triggers:
       "dblclick @ui.svg": "fullScreen"
 
     ui: ->
@@ -24,11 +24,9 @@ define ["marionette", "backbone", "d3", "jquery"], (Marionette, Backbone, d3, jQ
       channel.vent.on "user:change", @loadParticipants
       channel.vent.on "player:start", @startForce
       channel.vent.on "player:stop", @stopForce
-      channel.vent.on "player:fullScreen", @fullScreen
 
       @on "show", ->
-        svgElement = @ui.svg.get(0)
-        @svg = d3.select(svgElement)
+        @svg = d3.select(@ui.svg.get 0)
         @svg.attr "viewBox", "-100 -100 800 800"
         @linkLayer = @svg.append("g").attr("class", "links")
         @nodeLayer = @svg.append("g").attr("class", "nodes")
@@ -42,17 +40,6 @@ define ["marionette", "backbone", "d3", "jquery"], (Marionette, Backbone, d3, jQ
           .on "tick", @tick
         @nodes = @force.nodes()
         @links = @force.links()
-
-
-    fullScreen: =>
-      if @enableFullScreen
-        jQuery("body").removeClass "full-screen"
-        @svg.attr "class", ""
-        @enableFullScreen = false
-      else
-        jQuery("body").addClass "full-screen"
-        @svg.attr "class", "full-screen"
-        @enableFullScreen = true
 
     startForce: =>
       @enableForce = true

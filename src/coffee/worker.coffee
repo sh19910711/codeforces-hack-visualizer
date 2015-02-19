@@ -46,8 +46,10 @@ class Player
     timeToHack = @hacks.reduce timeToHackFunc, {}
 
     callNext = =>
+      @duration = @curTime if @curTime > @duration
       @reportTime @curTime
-      setTimeout func, 1000
+      if @curTime < @duration
+        setTimeout func, 1000
 
     func = =>
       return if @stop
