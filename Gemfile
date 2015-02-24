@@ -13,15 +13,16 @@ gem "mongoid"
 
 group :development do
   gem "rake"
+  gem "better_errors"
+  gem "binding_of_caller"
+  gem "shotgun"
+end
 
+group :test do
   gem "rspec"
   gem "rack-test"
   gem "webmock"
   gem "database_cleaner"
   gem "mongoid-tree"
-  gem "better_errors"
-  gem "binding_of_caller"
-
-  gem "shotgun"
 end
 
